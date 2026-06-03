@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Light mode (Warm Cream) */
+:root {
+  --bg-primary: #F8F5F0;
+  --surface-card: #FFFFFF;
+  --text-primary: #1A1A1A;
+  --text-muted: #888888;
+  --border: #E8E4DE;
+}
+
+/* Dark mode (Dark Focus) — OS decides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #1A1A1A;
+    --surface-card: #242424;
+    --text-primary: #E0E0E0;
+    --text-muted: #888888;
+    --border: #333333;
+  }
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
