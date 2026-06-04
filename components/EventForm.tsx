@@ -34,6 +34,7 @@ export function EventForm({ token, user, action, defaultValues, mode }: Props) {
   const [participants, setParticipants] = useState<string[]>(
     defaultValues?.participants?.map((p) => p.name) ?? [user.name]
   )
+  const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   function toggleParticipant(name: string) {
@@ -44,14 +45,36 @@ export function EventForm({ token, user, action, defaultValues, mode }: Props) {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    // Inject controlled state into FormData
+    setError(null)
+
+    // Validaciones
+    if (participants.length === 0) {
+      setError('Seleccioná al menos un participante.')
+      return
+    }
+
+    const form = e.currentTarget
+    const eventDate = (form.elements.namedItem('event_date') as HTMLInputElement)?.value
+    const customReminder = (form.elements.namedItem('custom_reminder') as HTMLInputElement)?.value
+
+    if (reminderType === 'custom' && !customReminder) {
+      setError('Elegí una fecha de recordatorio personalizada.')
+      return
+    }
+
+    if (reminderType === 'custom' && customReminder && eventDate && customReminder >= eventDate) {
+      setError('El recordatorio debe ser anterior a la fecha del evento.')
+      return
+    }
+
+    const formData = new FormData(form)
     formData.set('urgency', urgency)
     formData.set('reminder_type', reminderType)
     formData.delete('participants')
     participants.forEach((p) => formData.append('participants', p))
-    startTransition(async () => {
-      await action(formData)
+
+    startTransition(() => {
+      void action(formData)
     })
   }
 
@@ -206,6 +229,13 @@ export function EventForm({ token, user, action, defaultValues, mode }: Props) {
           })}
         </div>
       </div>
+
+      {/* Error */}
+      {error && (
+        <div className="rounded-xl px-4 py-3 text-sm" style={{ backgroundColor: '#F0959520', color: '#F09595' }}>
+          {error}
+        </div>
+      )}
 
       {/* Submit */}
       <button

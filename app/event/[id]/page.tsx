@@ -2,7 +2,8 @@ import Link from 'next/link'
 import { getUserFromToken } from '@/lib/auth'
 import { getEventById, type CalendarEvent } from '@/lib/events'
 import { EventForm } from '@/components/EventForm'
-import { updateEvent, deleteEvent } from '@/lib/actions'
+import { DeleteButton } from '@/components/DeleteButton'
+import { updateEvent } from '@/lib/actions'
 
 const URGENCY_COLOR: Record<string, string> = {
   alta: '#F09595',
@@ -176,18 +177,7 @@ export default async function EventDetailPage({
         )}
 
         {!isEditing && (
-          <form action={deleteEvent}>
-            <input type="hidden" name="token" value={token} />
-            <input type="hidden" name="id" value={event.id} />
-            <input type="hidden" name="date" value={event.event_date} />
-            <button
-              type="submit"
-              className="w-full py-2.5 rounded-xl text-sm font-medium border transition-opacity hover:opacity-80"
-              style={{ borderColor: '#F0959588', color: '#F09595' }}
-            >
-              Eliminar evento
-            </button>
-          </form>
+          <DeleteButton eventId={event.id} token={token!} date={event.event_date} />
         )}
       </main>
     </div>
