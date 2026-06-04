@@ -21,7 +21,7 @@ SELECT cron.schedule(
     url     := 'https://puhfueaskuvjnuucvejk.supabase.co/functions/v1/send-notifications',
     headers := jsonb_build_object(
       'Content-Type',  'application/json',
-      'Authorization', 'Bearer sb_secret_8DFU51jThqT6BzHMPIz7Pg_sjf6r6oW'
+      'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1aGZ1ZWFza3V2am51dWN2ZWprIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDUxMTYyMSwiZXhwIjoyMDk2MDg3NjIxfQ.y3bwKD_9lrTjv1X6x3pRu9DQ3nSyHqcBtLyo1Y6D7rw'
     ),
     body    := jsonb_build_object('date', CURRENT_DATE::text)
   ) AS request_id;
@@ -40,7 +40,7 @@ SELECT net.http_post(
   url     := 'https://puhfueaskuvjnuucvejk.supabase.co/functions/v1/send-notifications',
   headers := jsonb_build_object(
     'Content-Type',  'application/json',
-    'Authorization', 'Bearer sb_secret_8DFU51jThqT6BzHMPIz7Pg_sjf6r6oW'
+    'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1aGZ1ZWFza3V2am51dWN2ZWprIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDUxMTYyMSwiZXhwIjoyMDk2MDg3NjIxfQ.y3bwKD_9lrTjv1X6x3pRu9DQ3nSyHqcBtLyo1Y6D7rw'
   ),
   body    := jsonb_build_object('date', 'YYYY-MM-DD')
 ) AS request_id;
