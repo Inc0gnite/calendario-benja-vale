@@ -1,10 +1,16 @@
 'use server'
 
+import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { getUserFromToken } from './auth'
 import { createAdminClient } from './supabase'
 import { calculateReminderDate, type ReminderType } from './reminders'
+
+async function getAuthToken(): Promise<string | undefined> {
+  const cookieStore = await cookies()
+  return cookieStore.get('auth-token')?.value
+}
 
 async function getParticipantIds(names: string[]): Promise<string[]> {
   if (names.length === 0) return []
@@ -22,7 +28,7 @@ function buildReminderDate(eventDate: string, reminderType: string, customRemind
 }
 
 export async function createEvent(formData: FormData) {
-  const token = formData.get('token') as string
+  const token = await getAuthToken()
   const actor = await getUserFromToken(token)
   if (!actor) throw new Error('Unauthorized')
 
@@ -55,11 +61,11 @@ export async function createEvent(formData: FormData) {
   }
 
   revalidatePath('/calendar')
-  redirect(`/calendar?token=${token}&date=${event_date}`)
+  redirect(`/calendar?date=${event_date}`)
 }
 
 export async function updateEvent(formData: FormData) {
-  const token = formData.get('token') as string
+  const token = await getAuthToken()
   const actor = await getUserFromToken(token)
   if (!actor) throw new Error('Unauthorized')
 
@@ -92,11 +98,11 @@ export async function updateEvent(formData: FormData) {
 
   revalidatePath('/calendar')
   revalidatePath(`/event/${id}`)
-  redirect(`/calendar?token=${token}&date=${event_date}`)
+  redirect(`/calendar?date=${event_date}`)
 }
 
 export async function deleteEvent(formData: FormData) {
-  const token = formData.get('token') as string
+  const token = await getAuthToken()
   const actor = await getUserFromToken(token)
   if (!actor) throw new Error('Unauthorized')
 
@@ -107,5 +113,5 @@ export async function deleteEvent(formData: FormData) {
   await supabase.from('events').delete().eq('id', id)
 
   revalidatePath('/calendar')
-  redirect(`/calendar?token=${token}&date=${date}`)
+  redirect(`/calendar?date=${date}`)
 }

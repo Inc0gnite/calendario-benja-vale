@@ -5,17 +5,15 @@ import { deleteEvent } from '@/lib/actions'
 
 type Props = {
   eventId: string
-  token: string
   date: string
 }
 
-export function DeleteButton({ eventId, token, date }: Props) {
+export function DeleteButton({ eventId, date }: Props) {
   const [confirming, setConfirming] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   function handleDelete() {
     const formData = new FormData()
-    formData.set('token', token)
     formData.set('id', eventId)
     formData.set('date', date)
     startTransition(() => {

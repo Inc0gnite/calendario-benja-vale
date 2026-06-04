@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers'
 import { createAdminClient } from './supabase'
 
 export type AuthUser = {
@@ -32,4 +33,10 @@ export async function getUserFromToken(token?: string): Promise<AuthUser | null>
     color: USER_COLOR[data.name] ?? '#5DCAA5',
     token,
   }
+}
+
+export async function getUserFromCookie(): Promise<AuthUser | null> {
+  const cookieStore = await cookies()
+  const token = cookieStore.get('auth-token')?.value
+  return getUserFromToken(token)
 }

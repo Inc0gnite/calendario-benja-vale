@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation'
 
 type Props = {
-  token: string
   selectedDate: string
   weekDates: string[]
   eventCounts: Record<string, number>
@@ -11,18 +10,18 @@ type Props = {
 
 const DAYS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
 
-export function WeekStrip({ token, selectedDate, weekDates, eventCounts }: Props) {
+export function WeekStrip({ selectedDate, weekDates, eventCounts }: Props) {
   const router = useRouter()
   const today = new Date().toISOString().split('T')[0]
 
   function goToDay(date: string) {
-    router.push(`/calendar?token=${token}&date=${date}`)
+    router.push(`/calendar?date=${date}`)
   }
 
   function shiftWeek(direction: 1 | -1) {
     const ref = new Date(weekDates[0] + 'T12:00:00')
     ref.setDate(ref.getDate() + direction * 7)
-    router.push(`/calendar?token=${token}&date=${ref.toISOString().split('T')[0]}`)
+    router.push(`/calendar?date=${ref.toISOString().split('T')[0]}`)
   }
 
   const monthYear = new Date(weekDates[3] + 'T12:00:00').toLocaleDateString('es-AR', {
@@ -35,7 +34,6 @@ export function WeekStrip({ token, selectedDate, weekDates, eventCounts }: Props
       className="rounded-2xl mb-4 overflow-hidden"
       style={{ backgroundColor: 'var(--surface-card)' }}
     >
-      {/* Navegación de semana */}
       <div
         className="flex items-center justify-between px-3 pt-2.5 pb-1"
         style={{ borderBottom: '1px solid var(--border)' }}
@@ -64,7 +62,6 @@ export function WeekStrip({ token, selectedDate, weekDates, eventCounts }: Props
         </button>
       </div>
 
-      {/* Días de la semana */}
       <div className="grid grid-cols-7 gap-1 p-2">
         {weekDates.map((date) => {
           const dow = new Date(date + 'T12:00:00').getDay()

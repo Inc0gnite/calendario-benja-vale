@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { getUserFromToken } from '@/lib/auth'
+import { getUserFromCookie } from '@/lib/auth'
 import { getEventById, type CalendarEvent } from '@/lib/events'
 import { EventForm } from '@/components/EventForm'
 import { DeleteButton } from '@/components/DeleteButton'
@@ -98,10 +98,10 @@ export default async function EventDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ token?: string; edit?: string }>
+  searchParams: Promise<{ edit?: string }>
 }) {
-  const [{ id }, { token, edit }] = await Promise.all([params, searchParams])
-  const user = await getUserFromToken(token)
+  const [{ id }, { edit }] = await Promise.all([params, searchParams])
+  const user = await getUserFromCookie()
 
   if (!user) {
     return (
@@ -131,7 +131,7 @@ export default async function EventDetailPage({
   }
 
   const isEditing = edit === '1'
-  const backHref = `/calendar?token=${token}&date=${event.event_date}`
+  const backHref = `/calendar?date=${event.event_date}`
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
@@ -154,7 +154,7 @@ export default async function EventDetailPage({
         </h1>
         {!isEditing && (
           <Link
-            href={`/event/${id}?token=${token}&edit=1`}
+            href={`/event/${id}?edit=1`}
             className="text-sm px-3 py-1.5 rounded-xl flex-shrink-0 transition-opacity hover:opacity-80"
             style={{ backgroundColor: user.color + '22', color: user.color }}
           >
@@ -166,7 +166,6 @@ export default async function EventDetailPage({
       <main className="p-4 max-w-lg mx-auto flex flex-col gap-4">
         {isEditing ? (
           <EventForm
-            token={token!}
             user={user}
             action={updateEvent}
             defaultValues={event}
@@ -177,7 +176,7 @@ export default async function EventDetailPage({
         )}
 
         {!isEditing && (
-          <DeleteButton eventId={event.id} token={token!} date={event.event_date} />
+          <DeleteButton eventId={event.id} date={event.event_date} />
         )}
       </main>
     </div>

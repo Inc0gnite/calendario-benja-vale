@@ -1,8 +1,9 @@
 import Link from 'next/link'
-import { getUserFromToken } from '@/lib/auth'
+import { getUserFromCookie } from '@/lib/auth'
 import { getEventsForDate, getEventsForWeek } from '@/lib/events'
 import { WeekStrip } from '@/components/WeekStrip'
 import { EventCard } from '@/components/EventCard'
+import { logoutAction } from '@/app/login/actions'
 
 function getWeekDates(date: Date): string[] {
   const dow = date.getDay()
@@ -18,10 +19,10 @@ function getWeekDates(date: Date): string[] {
 export default async function CalendarPage({
   searchParams,
 }: {
-  searchParams: Promise<{ token?: string; date?: string }>
+  searchParams: Promise<{ date?: string }>
 }) {
-  const { token, date } = await searchParams
-  const user = await getUserFromToken(token)
+  const { date } = await searchParams
+  const user = await getUserFromCookie()
 
   if (!user) {
     return (
@@ -79,11 +80,19 @@ export default async function CalendarPage({
         >
           {user.name}
         </span>
+        <form action={logoutAction}>
+          <button
+            type="submit"
+            className="text-xs px-2.5 py-1 rounded-lg transition-opacity hover:opacity-70"
+            style={{ color: 'var(--text-muted)', border: '1px solid var(--border)' }}
+          >
+            Salir
+          </button>
+        </form>
       </header>
 
       <main className="p-4 max-w-2xl mx-auto">
         <WeekStrip
-          token={token!}
           selectedDate={selectedDate}
           weekDates={weekDates}
           eventCounts={eventCounts}
@@ -97,7 +106,7 @@ export default async function CalendarPage({
             {displayDate}
           </h2>
           <Link
-            href={`/event/new?token=${token}&date=${selectedDate}`}
+            href={`/event/new?date=${selectedDate}`}
             className="text-sm font-medium px-3 py-1.5 rounded-xl transition-opacity hover:opacity-80"
             style={{ backgroundColor: user.color + '22', color: user.color }}
           >
@@ -114,7 +123,7 @@ export default async function CalendarPage({
             </div>
           ) : (
             events.map((event) => (
-              <EventCard key={event.id} event={event} token={token!} />
+              <EventCard key={event.id} event={event} />
             ))
           )}
         </div>

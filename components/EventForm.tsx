@@ -5,7 +5,6 @@ import type { AuthUser } from '@/lib/auth'
 import type { CalendarEvent } from '@/lib/events'
 
 type Props = {
-  token: string
   user: AuthUser
   action: (formData: FormData) => Promise<void>
   defaultValues?: Partial<CalendarEvent> & { event_date?: string }
@@ -28,7 +27,7 @@ const REMINDER_OPTIONS = [
 
 const USER_COLOR: Record<string, string> = { Benja: '#5DCAA5', Vale: '#AFA9EC' }
 
-export function EventForm({ token, user, action, defaultValues, mode }: Props) {
+export function EventForm({ user, action, defaultValues, mode }: Props) {
   const [urgency, setUrgency] = useState(defaultValues?.urgency ?? 'media')
   const [reminderType, setReminderType] = useState(defaultValues?.reminder_type ?? 'friday_before')
   const [participants, setParticipants] = useState<string[]>(
@@ -86,7 +85,6 @@ export function EventForm({ token, user, action, defaultValues, mode }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <input type="hidden" name="token" value={token} />
       {defaultValues?.id && <input type="hidden" name="id" value={defaultValues.id} />}
 
       {/* Título */}

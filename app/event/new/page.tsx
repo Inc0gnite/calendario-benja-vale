@@ -1,15 +1,15 @@
 import Link from 'next/link'
-import { getUserFromToken } from '@/lib/auth'
+import { getUserFromCookie } from '@/lib/auth'
 import { EventForm } from '@/components/EventForm'
 import { createEvent } from '@/lib/actions'
 
 export default async function NewEventPage({
   searchParams,
 }: {
-  searchParams: Promise<{ token?: string; date?: string }>
+  searchParams: Promise<{ date?: string }>
 }) {
-  const { token, date } = await searchParams
-  const user = await getUserFromToken(token)
+  const { date } = await searchParams
+  const user = await getUserFromCookie()
 
   if (!user) {
     return (
@@ -24,7 +24,7 @@ export default async function NewEventPage({
     )
   }
 
-  const backHref = `/calendar?token=${token}${date ? `&date=${date}` : ''}`
+  const backHref = `/calendar${date ? `?date=${date}` : ''}`
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
@@ -46,7 +46,6 @@ export default async function NewEventPage({
 
       <main className="p-4 max-w-lg mx-auto">
         <EventForm
-          token={token!}
           user={user}
           action={createEvent}
           defaultValues={{ event_date: date ?? '' }}

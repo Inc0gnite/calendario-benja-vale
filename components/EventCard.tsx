@@ -14,21 +14,19 @@ const USER_COLOR: Record<string, string> = {
 
 type Props = {
   event: CalendarEvent
-  token: string
 }
 
-export function EventCard({ event, token }: Props) {
+export function EventCard({ event }: Props) {
   const firstParticipant = event.participants[0]?.name ?? 'Benja'
   const stripeColor = USER_COLOR[firstParticipant] ?? '#5DCAA5'
   const urgencyColor = URGENCY_COLOR[event.urgency] ?? '#FAC775'
 
   return (
     <Link
-      href={`/event/${event.id}?token=${token}`}
+      href={`/event/${event.id}`}
       className="flex rounded-xl overflow-hidden transition-opacity hover:opacity-80 active:opacity-60"
       style={{ backgroundColor: 'var(--surface-card)' }}
     >
-      {/* Stripe lateral: color = persona responsable */}
       <div className="w-1 flex-shrink-0" style={{ backgroundColor: stripeColor }} />
 
       <div className="flex-1 px-3 py-2.5">
