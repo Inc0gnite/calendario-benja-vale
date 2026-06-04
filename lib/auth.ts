@@ -24,7 +24,7 @@ export async function getUserFromToken(token?: string): Promise<AuthUser | null>
     .eq('secret_token', token)
     .single()
 
-  if (error) console.error('[auth] supabase error:', error.message, error.code)
+  if (error) console.error('[auth] supabase error:', error.message, error.code, '| url:', process.env.NEXT_PUBLIC_SUPABASE_URL)
   if (!data) return null
 
   return {
