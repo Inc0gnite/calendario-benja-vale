@@ -21,7 +21,7 @@ export default async function CalendarPage({
   searchParams: Promise<{ token?: string; date?: string }>
 }) {
   const { token, date } = await searchParams
-  const user = getUserFromToken(token)
+  const user = await getUserFromToken(token)
 
   if (!user) {
     return (

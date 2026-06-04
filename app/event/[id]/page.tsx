@@ -101,7 +101,7 @@ export default async function EventDetailPage({
   searchParams: Promise<{ token?: string; edit?: string }>
 }) {
   const [{ id }, { token, edit }] = await Promise.all([params, searchParams])
-  const user = getUserFromToken(token)
+  const user = await getUserFromToken(token)
 
   if (!user) {
     return (

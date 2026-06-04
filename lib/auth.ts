@@ -1,18 +1,35 @@
+import { createAdminClient } from './supabase'
+
 export type AuthUser = {
-  name: 'Benja' | 'Vale'
+  id: string
+  name: string
+  email: string
   color: string
   token: string
 }
 
-export function getUserFromToken(token?: string): AuthUser | null {
+const USER_COLOR: Record<string, string> = {
+  Benja: '#5DCAA5',
+  Vale: '#AFA9EC',
+}
+
+export async function getUserFromToken(token?: string): Promise<AuthUser | null> {
   if (!token) return null
 
-  if (token === process.env.BENJA_SECRET_TOKEN) {
-    return { name: 'Benja', color: '#5DCAA5', token }
-  }
-  if (token === process.env.VALE_SECRET_TOKEN) {
-    return { name: 'Vale', color: '#AFA9EC', token }
-  }
+  const supabase = createAdminClient()
+  const { data } = await supabase
+    .from('users')
+    .select('id, name, email, secret_token')
+    .eq('secret_token', token)
+    .single()
 
-  return null
+  if (!data) return null
+
+  return {
+    id: data.id,
+    name: data.name,
+    email: data.email,
+    color: USER_COLOR[data.name] ?? '#5DCAA5',
+    token,
+  }
 }
