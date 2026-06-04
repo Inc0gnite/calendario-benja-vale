@@ -18,12 +18,13 @@ export async function getUserFromToken(token?: string): Promise<AuthUser | null>
   if (!token) return null
 
   const supabase = createAdminClient()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('users')
     .select('id, name, email, secret_token')
     .eq('secret_token', token)
     .single()
 
+  if (error) console.error('[auth] supabase error:', error.message, error.code)
   if (!data) return null
 
   return {
